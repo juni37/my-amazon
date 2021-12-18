@@ -1,19 +1,27 @@
-package me.paulkim.shopPage;
+package com.kgitbank.shopMall;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import me.paulkim.shopPage.model.CategoryDTO;
+import me.paulkim.shopPage.model.ProductDTO;
 import me.paulkim.shopPage.service.CategoryMapper;
+import me.paulkim.shopPage.service.ProductMapper;
 
 @Controller
 public class ShopMallController {
@@ -21,9 +29,16 @@ public class ShopMallController {
 	@Autowired
 	CategoryMapper categoryMapper;
 	
+	@Autowired
+	ProductMapper productMapper;
+	
+	@Resource(name="uploadPath")
+	private String uploadPath;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home() {
 		return "home";
+		//return "testFileUpload";
 	}
 	
 	@RequestMapping(value = "/shop.do", method = RequestMethod.GET)
@@ -101,6 +116,46 @@ public class ShopMallController {
 		}else {
 			req.setAttribute("msg", "카테고리수정 실패!! 다시 입력해 주세요.");
 			req.setAttribute("url", "cate_edit.do?cnum=" + dto.getCnum());
+		}
+		return "message";
+	}
+	
+	@RequestMapping(value = "/prod_input.do", method = RequestMethod.GET)
+	public String prod_input(HttpServletRequest req) {
+		List<CategoryDTO> list = categoryMapper.listCategory();
+		if (list == null && list.size() == 0) {
+			req.setAttribute("msg", "카테고리를 먼저 입력해 주세요!!");
+			req.setAttribute("url", "cate_input.do");
+			return "message";
+		}
+		req.setAttribute("listCategory", list);
+		return "admin/shop/prod_input";
+	}
+	
+	@RequestMapping(value = "/prod_input.do", method = RequestMethod.POST)
+	public String prod_input(HttpServletRequest req, @ModelAttribute ProductDTO dto, BindingResult result) {
+		if (result.hasErrors()) {
+			dto.setPimage("");
+		}
+		MultipartHttpServletRequest mr = (MultipartHttpServletRequest)req;
+		MultipartFile file = mr.getFile("pimage");
+		File target = new File(uploadPath, file.getOriginalFilename());
+		if (file.getSize()>0) {
+			try {
+				file.transferTo(target);
+			}catch(IOException e) {}
+		dto.setPimage(file.getOriginalFilename());
+		}
+		
+		dto.setPcode(req.getParameter("category_fk") + dto.getPcode());
+		
+		int res = productMapper.insertProduct(dto);
+		if (res>0) {
+			req.setAttribute("msg", "상품등록 성공!! 상품고리목록페이지로 이동합니다.");
+			req.setAttribute("url", "prod_list.do");
+		}else {
+			req.setAttribute("msg", "상품 실패!! 다시 입력해 주세요.");
+			req.setAttribute("url", "prod_input.do");
 		}
 		return "message";
 	}
