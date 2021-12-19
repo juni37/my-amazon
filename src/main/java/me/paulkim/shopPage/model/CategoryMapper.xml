@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE mapper
-		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kgitbank.mavenHome.model.CategoryMapper">
 	<select id="getCategory" resultType="CategoryDTO" parameterType="java.util.Map">
 		select * from category where ${column} = #{value}
 	</select>
-
+	
 	<select id="listCategory" resultType="CategoryDTO">
 		select * from category
 	</select>
-
+	
 	<delete id="deleteCategory" parameterType="int">
 		delete from category where cnum = #{cnum}
 	</delete>
-
+	
 	<insert id="insertCategory" parameterType="CategoryDTO">
 		insert into category values(cate_seq.nextval, #{code}, #{cname})
 	</insert>
-
+	
 	<update id="updateCategory" parameterType="CategoryDTO">
 		update category set cname=#{cname} where cnum=#{cnum}
-	</update>
+	</update> 
 </mapper>

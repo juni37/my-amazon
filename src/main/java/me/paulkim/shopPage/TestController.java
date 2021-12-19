@@ -29,10 +29,10 @@ public class TestController {
 			try {
 				file.transferTo(target);
 			}catch(IOException e) {}
-			filename = file.getOriginalFilename();
-			filesize = (int)file.getSize();
+				filename = file.getOriginalFilename();
+		  filesize = (int)file.getSize();
 		}
-		req.setAttribute("msg", "파일이름 : " + filename +" , 파일사이즈 : " + filesize +"bytes");
+		req.setAttribute("msg", "�����̸� : " + filename +" , ���ϻ����� : " + filesize +"bytes");
 		return "message";
 	}
 }

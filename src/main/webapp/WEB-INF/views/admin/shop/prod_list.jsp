@@ -5,13 +5,22 @@
 	function checkDel(pnum, pimage){
 		var isDel = window.confirm("정말로 삭제하시겠습니까?");
 		if (isDel){
-			location.href="prod_delete.jsp?pnum="+pnum + "&pimage="+pimage;
+			location.href="prod_delete.do?pnum="+pnum + "&pimage="+pimage;
 		} 
 	}
 </script>
 <div align="center">
+	<h2>상품목록</h2>
+	<form name="f" action="prod_find.do" method="post">
+		<select name="search">
+			<option value="cate">카테고리명</option>
+			<option value="prod">상품명</option>
+			<option value="all">전체상품</option>
+		</select>
+		<input type="text" name="searchString">
+		<input type="submit" value="검색">		
+	</form>
 <table border="1" width="800">
-	<caption>상품목록</caption>
 	<tr bgcolor="yellow">
 		<th>번호</th>
 		<th>상품명</th>
@@ -19,7 +28,7 @@
 		<th>이미지</th>
 		<th>가격</th>
 		<th>수량</th>
-		<th>수정|삭제|재고</th>
+		<th>수정|삭제</th>
 	</tr>
 <c:if test="${empty listProduct}">
 	<tr>
