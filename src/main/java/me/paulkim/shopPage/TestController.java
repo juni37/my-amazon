@@ -1,4 +1,4 @@
-package com.kgitbank.shopMall;
+package me.paulkim.shopPage;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,10 +29,10 @@ public class TestController {
 			try {
 				file.transferTo(target);
 			}catch(IOException e) {}
-				filename = file.getOriginalFilename();
-		  filesize = (int)file.getSize();
+			filename = file.getOriginalFilename();
+			filesize = (int)file.getSize();
 		}
-		req.setAttribute("msg", "ÆÄÀÏÀÌ¸§ : " + filename +" , ÆÄÀÏ»çÀÌÁî : " + filesize +"bytes");
+		req.setAttribute("msg", "íŒŒì¼ì´ë¦„ : " + filename +" , íŒŒì¼ì‚¬ì´ì¦ˆ : " + filesize +"bytes");
 		return "message";
 	}
 }

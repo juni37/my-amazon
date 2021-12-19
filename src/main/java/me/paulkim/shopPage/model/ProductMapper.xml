@@ -3,9 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="me.paulkim.shopPage.model.ProductMapper">
+<mapper namespace="com.kgitbank.mavenHome.model.ProductMapper">
     <insert id="insertProduct" parameterType="ProductDTO">
         insert into product values(prod_seq.nextval, #{pname}, #{pcode}, #{pcompany}, #{price},
                                    #{pspec}, #{pcontent}, #{pimage}, 0, #{point}, #{sale})
     </insert>
+
+    <select id="listProduct" resultType="ProductDTO">
+        select * from product
+    </select>
 </mapper>
