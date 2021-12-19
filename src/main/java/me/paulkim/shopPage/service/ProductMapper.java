@@ -21,4 +21,20 @@ public class ProductMapper {
     public List<ProductDTO> listProduct(){
         return sqlSession.selectList("listProduct");
     }
+
+    public ProductDTO getProduct(int pnum) {
+        return sqlSession.selectOne("getProduct", pnum);
+    }
+
+    public int deleteProduct(String pnum) {
+        return sqlSession.delete("deleteProduct", Integer.parseInt(pnum));
+    }
+
+    public int updateProduct(ProductDTO dto) {
+        return sqlSession.update("updateProduct", dto);
+    }
 }
+
+
+
+

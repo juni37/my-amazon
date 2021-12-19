@@ -166,7 +166,76 @@ public class ShopMallController {
 		req.setAttribute("listProduct", list);
 		return "admin/shop/prod_list";
 	}
+
+	@RequestMapping(value = "/prod_view.do", method = RequestMethod.GET)
+	public String prod_view(HttpServletRequest req, @RequestParam int pnum) {
+		ProductDTO dto = productMapper.getProduct(pnum);
+		req.setAttribute("getProduct", dto);
+		return "admin/shop/prod_view";
+	}
+
+	@RequestMapping(value = "/prod_delete.do", method = RequestMethod.GET)
+	public String prod_delete(HttpServletRequest req,
+							  @RequestParam Map<String, String> params) {
+		int res = productMapper.deleteProduct(params.get("pnum"));
+		if (res>0) {
+			File file = new File(uploadPath, params.get("pimage"));
+			file.delete();
+			req.setAttribute("msg", "파일삭제 성공!! 파일목록페이지로 이동합니다.");
+			req.setAttribute("url", "prod_list.do");
+		}else {
+			req.setAttribute("msg", "파일삭제 실패!! 파일목록페이지로 이동합니다.");
+			req.setAttribute("url", "prod_list.do");
+		}
+		return "message";
+
+	}
+
+	@RequestMapping(value = "/prod_update.do", method = RequestMethod.GET)
+	public String prod_update(HttpServletRequest req, @RequestParam int pnum) {
+		ProductDTO dto = productMapper.getProduct(pnum);
+		req.setAttribute("getProduct", dto);
+		return "admin/shop/prod_update";
+	}
+
+	@RequestMapping(value = "/prod_update.do", method = RequestMethod.POST)
+	public String prod_updateOk(HttpServletRequest req, @ModelAttribute ProductDTO dto, BindingResult result) {
+		if (result.hasErrors()) {
+			dto.setPimage("");
+		}
+		MultipartHttpServletRequest mr = (MultipartHttpServletRequest)req;
+		MultipartFile file = mr.getFile("pimage");
+		File target = new File(uploadPath, file.getOriginalFilename());
+		if (file.getSize()>0) {
+			try {
+				file.transferTo(target);
+			}catch(IOException e) {}
+			dto.setPimage(file.getOriginalFilename());
+		}else {
+			dto.setPimage(req.getParameter("pimage2"));
+		}
+
+		int res = productMapper.updateProduct(dto);
+		if (res>0) {
+			req.setAttribute("msg", "상품수정 성공!! 상품고리목록페이지로 이동합니다.");
+			req.setAttribute("url", "prod_list.do");
+		}else {
+			req.setAttribute("msg", "상품 수정!! 다시 입력해 주세요.");
+			req.setAttribute("url", "prod_update.do?pnum=" + dto.getPnum());
+		}
+		return "message";
+	}
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
