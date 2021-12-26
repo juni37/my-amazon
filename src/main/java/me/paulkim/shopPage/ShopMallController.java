@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import me.paulkim.shopPage.model.CategoryDTO;
 import me.paulkim.shopPage.model.ProductDTO;
 import me.paulkim.shopPage.service.CategoryMapper;
+import me.paulkim.shopPage.service.MallMapper;
 import me.paulkim.shopPage.service.ProductMapper;
 
 @Controller
@@ -28,29 +30,32 @@ public class ShopMallController {
 
 	@Autowired
 	CategoryMapper categoryMapper;
-	
+
 	@Autowired
 	ProductMapper productMapper;
-	
+
+	@Autowired
+	MallMapper mallMapper;
+
 	@Resource(name="uploadPath")
 	private String uploadPath;
-	
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home() {
 		return "home";
 		//return "testFileUpload";
 	}
-	
+
 	@RequestMapping(value = "/shop.do", method = RequestMethod.GET)
 	public String shopHome() {
 		return "admin/shop/shopIndex";
 	}
-	
+
 	@RequestMapping(value = "/cate_input.do", method = RequestMethod.GET)
 	public String cateInput() {
 		return "admin/shop/cate_input";
 	}
-	
+
 	@RequestMapping(value = "/cate_input.do", method = RequestMethod.POST)
 	public String cateInputOk(HttpServletRequest req, @ModelAttribute CategoryDTO dto) {
 		Map<String, String> map = new Hashtable<String, String>();
@@ -75,7 +80,7 @@ public class ShopMallController {
 		}
 		return "message";
 	}
-	
+
 	@RequestMapping(value = "/cate_list.do", method = RequestMethod.GET)
 	public ModelAndView cateList() {
 		List<CategoryDTO> list = new ArrayList<CategoryDTO>();
@@ -83,7 +88,7 @@ public class ShopMallController {
 		ModelAndView mav = new ModelAndView("admin/shop/cate_list", "listCategory", list);
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/cate_delete.do", method = RequestMethod.GET)
 	public String cateDelete(HttpServletRequest req, @RequestParam int cnum) {
 		int res = categoryMapper.deleteCategory(cnum);
@@ -96,7 +101,7 @@ public class ShopMallController {
 		}
 		return "message";
 	}
-	
+
 	@RequestMapping(value = "/cate_edit.do", method = RequestMethod.GET)
 	public String cate_edit(HttpServletRequest req, @RequestParam int cnum) {
 		Map<String, String> map = new Hashtable<String, String>();
@@ -106,7 +111,7 @@ public class ShopMallController {
 		req.setAttribute("getCategory", dto);
 		return "admin/shop/cate_edit";
 	}
-	
+
 	@RequestMapping(value = "/cate_edit.do", method = RequestMethod.POST)
 	public String cateEditOk(HttpServletRequest req, @ModelAttribute CategoryDTO dto) {
 		int res = categoryMapper.updateCategory(dto);
@@ -119,7 +124,7 @@ public class ShopMallController {
 		}
 		return "message";
 	}
-	
+
 	@RequestMapping(value = "/prod_input.do", method = RequestMethod.GET)
 	public String prod_input(HttpServletRequest req) {
 		List<CategoryDTO> list = categoryMapper.listCategory();
@@ -131,7 +136,7 @@ public class ShopMallController {
 		req.setAttribute("listCategory", list);
 		return "admin/shop/prod_input";
 	}
-	
+
 	@RequestMapping(value = "/prod_input.do", method = RequestMethod.POST)
 	public String prod_input(HttpServletRequest req, @ModelAttribute ProductDTO dto, BindingResult result) {
 		if (result.hasErrors()) {
@@ -144,11 +149,11 @@ public class ShopMallController {
 			try {
 				file.transferTo(target);
 			}catch(IOException e) {}
-		dto.setPimage(file.getOriginalFilename());
+			dto.setPimage(file.getOriginalFilename());
 		}
-		
+
 		dto.setPcode(req.getParameter("category_fk") + dto.getPcode());
-		
+
 		int res = productMapper.insertProduct(dto);
 		if (res>0) {
 			req.setAttribute("msg", "상품등록 성공!! 상품고리목록페이지로 이동합니다.");
@@ -159,24 +164,24 @@ public class ShopMallController {
 		}
 		return "message";
 	}
-	
+
 	@RequestMapping(value = "/prod_list.do")
 	public String prod_list(HttpServletRequest req) {
 		List<ProductDTO> list = productMapper.listProduct();
 		req.setAttribute("listProduct", list);
 		return "admin/shop/prod_list";
 	}
-	
+
 	@RequestMapping(value = "/prod_view.do", method = RequestMethod.GET)
 	public String prod_view(HttpServletRequest req, @RequestParam int pnum) {
 		ProductDTO dto = productMapper.getProduct(pnum);
 		req.setAttribute("getProduct", dto);
 		return "admin/shop/prod_view";
 	}
-	
+
 	@RequestMapping(value = "/prod_delete.do", method = RequestMethod.GET)
-	public String prod_delete(HttpServletRequest req, 
-										@RequestParam Map<String, String> params) {
+	public String prod_delete(HttpServletRequest req,
+							  @RequestParam Map<String, String> params) {
 		int res = productMapper.deleteProduct(params.get("pnum"));
 		if (res>0) {
 			File file = new File(uploadPath, params.get("pimage"));
@@ -188,16 +193,16 @@ public class ShopMallController {
 			req.setAttribute("url", "prod_list.do");
 		}
 		return "message";
-				
+
 	}
-	
+
 	@RequestMapping(value = "/prod_update.do", method = RequestMethod.GET)
 	public String prod_update(HttpServletRequest req, @RequestParam int pnum) {
 		ProductDTO dto = productMapper.getProduct(pnum);
 		req.setAttribute("getProduct", dto);
 		return "admin/shop/prod_update";
 	}
-	
+
 	@RequestMapping(value = "/prod_update.do", method = RequestMethod.POST)
 	public String prod_updateOk(HttpServletRequest req, @ModelAttribute ProductDTO dto, BindingResult result) {
 		if (result.hasErrors()) {
@@ -216,7 +221,7 @@ public class ShopMallController {
 		}else {
 			dto.setPimage(req.getParameter("pimage2"));
 		}
-		System.out.println(dto.getPimage());	
+		System.out.println(dto.getPimage());
 		int res = productMapper.updateProduct(dto);
 		if (res>0) {
 			req.setAttribute("msg", "상품수정 성공!! 상품고리목록페이지로 이동합니다.");
@@ -227,7 +232,7 @@ public class ShopMallController {
 		}
 		return "message";
 	}
-	
+
 	@RequestMapping(value = "/prod_find.do")
 	public String prod_find(HttpServletRequest req, @RequestParam Map<String, String> params) {
 		List<ProductDTO> list = null;
@@ -244,6 +249,31 @@ public class ShopMallController {
 		}
 		req.setAttribute("listProduct", list);
 		return "admin/shop/prod_list";
+	}
+
+	@RequestMapping(value = "/mall_index.do")
+	public String mallIndex(HttpServletRequest req) {
+		Hashtable<String, List<ProductDTO>> ht =
+				new Hashtable<String, List<ProductDTO>>();
+
+		String[] str = new String[] {"HIT", "NEW", "SALE"};
+		for(String s : str) {
+			List<ProductDTO> list = mallMapper.listPspec(s);
+			ht.put(s, list);
+		}
+		HttpSession session = req.getSession();
+		session.setAttribute("pspec", ht);
+		/*
+		List<ProductDTO> phit = mallMapper.listPspec("HIT");
+		List<ProductDTO> pnew = mallMapper.listPspec("NEW");
+		List<ProductDTO> psale = mallMapper.listPspec("SALE");
+
+		ht.put("HIT", phit);
+		ht.put("NEW", pnew);
+		ht.put("SALE", psale);
+		*/
+
+		return "display/mall_index";
 	}
 }
 

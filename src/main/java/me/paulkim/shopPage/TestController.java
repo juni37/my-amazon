@@ -32,7 +32,7 @@ public class TestController {
 				filename = file.getOriginalFilename();
 		  filesize = (int)file.getSize();
 		}
-		req.setAttribute("msg", "�����̸� : " + filename +" , ���ϻ����� : " + filesize +"bytes");
+		req.setAttribute("msg", "파일이름 : " + filename +" , 파일 사이즈 : " + filesize +"bytes");
 		return "message";
 	}
 }

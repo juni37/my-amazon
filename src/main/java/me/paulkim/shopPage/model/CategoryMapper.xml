@@ -4,7 +4,7 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.kgitbank.mavenHome.model.CategoryMapper">
+<mapper namespace="me.paulkim.shopPage.model.CategoryMapper">
 	<select id="getCategory" resultType="CategoryDTO" parameterType="java.util.Map">
 		select * from category where ${column} = #{value}
 	</select>
