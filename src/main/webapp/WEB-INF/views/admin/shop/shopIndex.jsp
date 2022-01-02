@@ -13,7 +13,6 @@
 		<li><h2><a href="prod_input.do">상품 등록</a></h2></li>
 		<li><h2><a href="prod_list.do">상품 목록</a></h2></li>
 		<li><h2><a href="mall_index.do">쇼핑몰홈</a></h2></li>
-		<li><h2>재고 관리</h2></li>
 	</ul>
 </body>
 </html>

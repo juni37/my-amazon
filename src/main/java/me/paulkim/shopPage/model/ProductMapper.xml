@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="me.paulkim.shopPage.model.ProductMapper">
 	<insert id="insertProduct" parameterType="ProductDTO">
 		insert into product values(prod_seq.nextval, #{pname}, #{pcode}, #{pcompany}, #{price},
-								   #{pspec}, #{pcontent}, #{pimage}, 0, #{point}, #{sale})
+			#{pspec}, #{pcontent}, #{pimage}, 0, #{point}, #{sale}) 
 	</insert>
-
+	
 	<select id="listProduct" resultType="ProductDTO">
 		select * from product
 	</select>
-
+	
 	<select id="getProduct" resultType="ProductDTO" parameterType="int">
 		select * from product where pnum = #{pnum}
 	</select>
-
+	
 	<delete id="deleteProduct" parameterType="int">
 		delete from product where pnum = #{pnum}
 	</delete>
-
+	
 	<update id="updateProduct" parameterType="ProductDTO">
 		update product set pname=#{pname}, pcompany=#{pcompany}, price=#{price},
-						   pspec=#{pspec}, sale=#{sale}, pcontent=#{pcontent} ,
-						   pimage=#{pimage}, point=#{point} where pnum=#{pnum}
+		pspec=#{pspec}, sale=#{sale}, pcontent=#{pcontent} , 
+		pimage=#{pimage}, point=#{point} where pnum=#{pnum}
 	</update>
-
+	
 	<select id="findCateProduct" resultType="ProductDTO" parameterType="java.util.Map">
-		select * from product where
-				${search} like (select A.code from
-					(select * from category where cname=#{searchString})A)||'%'
+		select * from product where 
+			${search} like (select A.code from 
+			(select * from category where cname=#{searchString})A)||'%'
 	</select>
 	<select id="findProdProduct" resultType="ProductDTO" parameterType="java.util.Map">
 		select * from product where ${search} like '%'||#{searchString}||'%'
 	</select>
+	
+	<update id="inQty" parameterType="ProductDTO">
+		update product set pqty = #{pqty} where pnum=#{pnum}
+	</update>
 </mapper>
 
 

@@ -41,6 +41,10 @@ public class ProductMapper {
 	public List<ProductDTO> findProdProduct(Map<String, String> map){
 		return sqlSession.selectList("findProdProduct", map);
 	}
+	
+	public int inQty(ProductDTO dto) {
+		return sqlSession.update("inQty", dto);
+	}
 }
 
 

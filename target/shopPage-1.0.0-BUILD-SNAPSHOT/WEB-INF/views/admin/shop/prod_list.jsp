@@ -28,6 +28,7 @@
 		<th>이미지</th>
 		<th>가격</th>
 		<th>수량</th>
+		<th>재고관리</th>
 		<th>수정|삭제</th>
 	</tr>
 <c:if test="${empty listProduct}">
@@ -47,6 +48,10 @@
 		</td>
 		<td>${dto.price}</td>
 		<td>${dto.pqty}</td>
+		<td>
+			<a href="prod_inQty.do?pnum=${dto.pnum}">입고</a> | 
+			<a href="prod_outQty.do?pnum=${dto.pnum}">출고</a>
+		</td>
 		<td>
 			<a href="prod_update.do?pnum=${dto.pnum}">수정</a> |
 			<a href="javascript:checkDel('${dto.pnum}','${dto.pimage}')">삭제</a>
