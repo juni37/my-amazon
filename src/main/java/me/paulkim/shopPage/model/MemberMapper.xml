@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.paulkim.shopPage.model.MemberMapper">
+	<select id="checkMember" parameterType="java.util.Map" resultType="MemberDTO">
+		select * from member where ssn1=#{ssn1} and ssn2=#{ssn2}
+	</select>
+	
+	<insert id="inputMember" parameterType="MemberDTO">
+		insert into member values(member_seq.nextval, #{name}, #{id},
+			#{passwd}, #{ssn1}, #{ssn2}, #{email}, #{hp1}, #{hp2}, #{hp3}, sysdate)
+	</insert>
+</mapper>

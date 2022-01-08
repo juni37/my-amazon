@@ -40,7 +40,12 @@ public class ShopMallController {
 	@Resource(name="uploadPath")
 	private String uploadPath;
 	
-	@RequestMapping(value={ "/", "/main.do" }, method = RequestMethod.GET)
+	@RequestMapping(value={ "/", "/index.do" }, method = RequestMethod.GET)
+	public String index() {
+		return "login/login";
+	}
+	
+	@RequestMapping(value="/main.do", method = RequestMethod.GET)
 	public String home() {
 		return "home";
 	}
